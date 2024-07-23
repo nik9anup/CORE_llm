@@ -32,7 +32,7 @@ jobs:
           pip install -q nbconvert
           pip install -q cython
           pip install -q aiohttp==3.9.5
-          pip install -q sqlite3==3.35.0
+          pip install -q sqlite==3.35.0
          
           
       - name: Set environment variables
