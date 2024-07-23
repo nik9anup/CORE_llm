@@ -19,6 +19,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          python3 -m pip install ipykernel
+          python3 -m ipykernel install --user
           pip install -q llama-index-llms-gemini
           pip install -q llama-index google-generativeai
           pip install -q llama-index-embeddings-gemini
@@ -29,6 +31,7 @@ jobs:
           pip install -q github
           pip install -q nbconvert
           pip install -q aiohttp==3.9.0b0
+          
 
       - name: Set environment variables
         run: |
@@ -38,4 +41,5 @@ jobs:
           echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
 
       - name: Run Jupyter Notebook
-        run: python src_core.py
+        run: run: jupyter nbconvert --to notebook --execute your_notebook.ipynb --output executed_notebook.ipynb
+
