@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
@@ -28,7 +28,7 @@ jobs:
           pip install -q PyGithub
           pip install -q github
           pip install -q nbconvert
-          pip install -q aiohttp
+          pip install -q aiohttp==3.9.0b0
 
       - name: Set environment variables
         run: |
