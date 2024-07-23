@@ -1,0 +1,39 @@
+name: Run Jupyter Notebook
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  run-notebook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -q llama-index-llms-gemini
+          pip install -q llama-index google-generativeai
+          pip install -q llama-index-embeddings-gemini
+          pip install -q chromadb
+          pip install -q llama-index-vector-stores-chroma
+          pip install -q llama-index-llms-anthropic
+          pip install -q PyGithub
+          pip install -q nbconvert
+
+      - name: Set environment variables
+        run: |
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> $GITHUB_ENV
+          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+      - name: Run Jupyter Notebook
+        run: jupyter nbconvert --to notebook --execute your_notebook.ipynb --output executed_notebook.ipynb
