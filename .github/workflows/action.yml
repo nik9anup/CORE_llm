@@ -6,7 +6,7 @@ on:
 
 jobs:
   run-notebook:
-    runs-on:  ubuntu-24.04 
+    runs-on:  ubuntu-22.04 
 
     steps:
       - name: Checkout repository
@@ -32,7 +32,7 @@ jobs:
           pip install -q nbconvert
           pip install -q cython
           pip install -q aiohttp==3.8.1
-          pip install -q pysqlite3
+          pip install -q pysqlite3-binary
           
      
       - name: Set environment variables
