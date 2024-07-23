@@ -36,4 +36,4 @@ jobs:
           echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
 
       - name: Run Jupyter Notebook
-        run: jupyter nbconvert --to notebook --execute your_notebook.ipynb --output executed_notebook.ipynb
+        run: jupyter nbconvert --to notebook --execute src_core.ipynb --output executed_notebook.ipynb
