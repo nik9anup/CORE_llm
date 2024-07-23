@@ -6,7 +6,7 @@ on:
 
 jobs:
   run-notebook:
-    runs-on: ubuntu-latest
+    runs-on:  ubuntu-20.04 
 
     steps:
       - name: Checkout repository
@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.12'
+          python-version: '3.10.12'
 
       - name: Install dependencies
         run: |
@@ -30,16 +30,14 @@ jobs:
           pip install -q PyGithub
           pip install -q github
           pip install -q nbconvert
-          pip install -q aiohttp==3.9.0b0
+          pip install -q cython
+          pip install -q aiohttp==3.9.5
           
-
       - name: Set environment variables
         run: |
           echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
           echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> $GITHUB_ENV
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
           echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-
       - name: Run Jupyter Notebook
-        run: run: jupyter nbconvert --to notebook --execute your_notebook.ipynb --output executed_notebook.ipynb
-
+        run: python src_core.py
