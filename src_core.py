@@ -12,6 +12,9 @@ import tree_sitter_go as tsgo
 from tree_sitter import Language, Parser
 from llama_index.core import PromptTemplate
 import extract_relevant_part
+import pysqlite3
+import sys
+sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 # Set environment variables
 os.environ["ANTHROPIC_API_KEY"] = os.getenv("ANTHROPIC_API_KEY")
