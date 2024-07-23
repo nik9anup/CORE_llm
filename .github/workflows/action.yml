@@ -28,6 +28,7 @@ jobs:
           pip install -q PyGithub
           pip install -q github
           pip install -q nbconvert
+          pip install -q pip aiohttp
 
       - name: Set environment variables
         run: |
