@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10.14'
+          python-version: '3.10.12'
 
       - name: Install dependencies
         run: |
@@ -31,7 +31,7 @@ jobs:
           pip install -q github==1.2.3
           pip install -q nbconvert
           pip install -q cython
-          pip install -q aiohttp==3.9.5
+          pip install -q aiohttp==3.8.1
           pip install -q pysqlite3
           
      
