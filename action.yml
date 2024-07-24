@@ -1,4 +1,4 @@
-name: Run Python
+name: CORE-Refactor
 
 on:
   pull_request:
