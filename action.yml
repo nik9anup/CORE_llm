@@ -7,7 +7,19 @@ on:
 
 jobs:
   run-notebook:
-    runs-on:  ubuntu-20.04 
+    runs-on:  ubuntu-latest
+
+    
+   inputs:
+    GOOGLE_API_KEY:
+      description: 'GOOGLE API Key'
+      required: true
+    GITHUB_TOKEN:
+      description: 'Github token'
+      required: true
+    ANTHROPIC_API_KEY:
+      description: 'ANTHROPIC API Key'
+      required: true
 
     steps:
       - name: Checkout repository
@@ -32,7 +44,7 @@ jobs:
           pip install -q github
           pip install -q nbconvert
           pip install -q cython
-          pip install -q aiohttp==3.9.5
+        
           
       - name: Set environment variables
         run: |
