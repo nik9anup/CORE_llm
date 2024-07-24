@@ -38,4 +38,4 @@ jobs:
           echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
       - name: Run Jupyter Notebook
         run:  python -m pip install -r .github/workflows/requirements.txt
-              python .github/workflows/src_core.py
+              python src_core.py
