@@ -5,3 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "CORE_llm"
 version = "0.1"
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
