@@ -19,7 +19,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip freeze | xargs pip uninstall -y
           python3 -m pip install ipykernel
           python3 -m ipykernel install --user
           pip install -q llama-index-llms-gemini
