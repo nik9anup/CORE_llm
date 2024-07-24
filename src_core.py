@@ -1,5 +1,6 @@
 import os
 import chromadb
+import pygithub
 from github import Github
 from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.core import Settings, VectorStoreIndex, SimpleDirectoryReader, StorageContext
