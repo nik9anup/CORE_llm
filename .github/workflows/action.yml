@@ -21,7 +21,7 @@ jobs:
         run: |
           python3 -m pip install ipykernel
           python3 -m ipykernel install --user
-          pip install -r requirements.txt
+          pip install -r requirements.txt 
           pip install -e  
           pip install -q PyGithub 
           pip install -q github==1.2.3 
