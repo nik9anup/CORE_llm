@@ -3,4 +3,4 @@ llama-index google-generativeai
 llama-index-embeddings-gemini
 chromadb
 llama-index-vector-stores-chroma
-pip install -q llama-index-llms-anthropic
+llama-index-llms-anthropic
