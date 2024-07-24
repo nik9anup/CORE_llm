@@ -23,6 +23,7 @@ jobs:
           python3 -m ipykernel install --user
           pip install -r requirements.txt
           pip install -e .
+          pip install -q pyyaml==6.0.1
           pip install -q llama-index
           pip install -q PyGithub 
           pip install -q github==1.2.3 
