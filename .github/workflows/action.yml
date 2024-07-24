@@ -19,16 +19,16 @@ jobs:
 
       - name: Install dependencies
         run:
+          pip freeze | xargs pip uninstall -y
           python3 -m pip install ipykernel
           python3 -m ipykernel install --user
-          pip freeze | xargs pip uninstall -y
           pip install -q llama-index-llms-gemini
           pip install -q llama-index google-generativeai
           pip install -q llama-index-embeddings-gemini
           pip install -q chromadb
           pip install -q llama-index-vector-stores-chroma
           pip install -q llama-index-llms-anthropic
-          pip install --upgrade PyGitHub
+          pip install -q PyGitHub
           pip install -q github
           pip install -q nbconvert
           pip install -q cython
