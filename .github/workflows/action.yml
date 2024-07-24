@@ -21,7 +21,7 @@ jobs:
         run: |
           python3 -m pip install ipykernel
           python3 -m ipykernel install --user
-          python -m pip install -r .github/workflows/requirements.txt
+          pip install -r requirements.txt
           pip install -e .
           pip install -q llama-index
           pip install -q PyGithub 
@@ -37,4 +37,5 @@ jobs:
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
           echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
       - name: Run Jupyter Notebook
-        run: python src_core.py
+        run:  python -m pip install -r .github/workflows/requirements.txt
+              python .github/workflows/src_core.py
