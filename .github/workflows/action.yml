@@ -23,7 +23,7 @@ jobs:
           python3 -m ipykernel install --user
           pip install -r requirements.txt
           pip install -e 
-          pip install -q PyGithub
+          pip install -q PyGithub 
           pip install -q github==1.2.3 
           pip install -q pysqlite3-binary
           
