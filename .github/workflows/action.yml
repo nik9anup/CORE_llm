@@ -27,7 +27,7 @@ jobs:
           pip install -q chromadb
           pip install -q llama-index-vector-stores-chroma
           pip install -q llama-index-llms-anthropic
-          pip install -q PyGithub
+          pip install --upgrade PyGitHub
           pip install -q github
           pip install -q nbconvert
           pip install -q cython
