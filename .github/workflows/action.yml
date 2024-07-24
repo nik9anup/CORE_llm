@@ -26,7 +26,7 @@ jobs:
           pip install -q llama-index
           pip install -q PyGithub 
           pip install -q github==1.2.3 
-          pip install -q pysqlite3-binary
+          pip install -q pysqlite3-binary 
           
      
       - name: Set environment variables
