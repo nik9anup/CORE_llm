@@ -6,6 +6,6 @@ build-backend = "setuptools.build_meta"
 name = "CORE_llm"
 version = "0.1"
 
-[tool.setuptools]
+[tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
-py-modules = []
+
