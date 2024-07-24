@@ -21,7 +21,7 @@ jobs:
         run: |
           python3 -m pip install ipykernel
           python3 -m ipykernel install --user
-          pip install -r requirements.txt  
+          python -m pip install -r .github/workflows/requirements.txt
           pip install -e .
           pip install -q llama-index
           pip install -q PyGithub 
