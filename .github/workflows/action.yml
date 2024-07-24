@@ -2,20 +2,27 @@ name: Run Python
 
 on:
   pull_request:
-    types: [opened, synchronize]
-
+    types: [opened, synchronize] 
+ 
 jobs:
   run-notebook:
-    runs-on:  ubuntu-20.04 
+    runs-on:  ubuntu-latest 
 
-    steps:
+    steps: 
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10.12'
+          python-version: '3.10.14'
+
+      - name: Create and activate virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+
 
       - name: Install dependencies
         run: |
@@ -27,12 +34,15 @@ jobs:
           pip install -q chromadb
           pip install -q llama-index-vector-stores-chroma
           pip install -q llama-index-llms-anthropic
-          pip install -q PyGithub
           pip install -q github
+          pip install -q PyGitHub
           pip install -q nbconvert
+          pip install -q tree-sitter-go
+          pip install -q tree-sitter
           pip install -q cython
-          pip install -q aiohttp==3.9.5
-          
+          pip install -q pysqlite3
+           
+     
       - name: Set environment variables
         run: |
           echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
@@ -40,4 +50,4 @@ jobs:
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
           echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
       - name: Run Jupyter Notebook
-        run: python src_core.py
+        run:  python src_core.py

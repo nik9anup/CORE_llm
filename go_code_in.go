@@ -1,73 +1,89 @@
 package main
 
 import (
-    "fmt"
-    "strconv"
+	"fmt"
+	"strings"
 )
 
-func parseAndCalculateSum(input string) (int, bool) {
-
-    input = trimWhitespace(input)
-    if input == "" {
-        return 0, false
-    }
-
-    
-    var numbers []int
-    var numStr string
-    inNumber := false
-
-    for _, ch := range input {
-        if ch >= '0' && ch <= '9' {
-            numStr += string(ch)
-            inNumber = true
-        } else if inNumber {
-            num, err := atoi(numStr)
-            if err != nil {
-                return 0, false
-            }
-            numbers = append(numbers, num)
-            numStr = ""
-            inNumber = false
-        }
-    }
-
-    
-    sum := 0
-    for _, num := range numbers {
-        square := num * num
-        sum += square
-    }
-
-    return sum, true
+// add function: adds two integers
+func add(a, b int) int {
+	return a + b
 }
 
-func atoi(str string) (int, bool) {
-    num, err := strconv.Atoi(str)
-    if err != nil {
-        return 0, false
-    }
-    return num, true
+// subtract function: subtracts the second integer from the first
+func subtract(a, b int) int {
+	return a - b
 }
 
-func trimWhitespace(str string) string {
-    
-    start, end := 0, len(str)-1
-    for start <= end && (str[start] == ' ' || str[start] == '\t' || str[start] == '\n' || str[start] == '\r') {
-        start++
-    }
-    for end >= start && (str[end] == ' ' || str[end] == '\t' || str[end] == '\n' || str[end] == '\r') {
-        end--
-    }
-    return str[start : end+1]
+// multiply function: multiplies two integers
+func multiply(a, b int) int {
+	return a * b
+}
+
+// sumArray function: sums elements of an integer slice, calls add function
+func sumArray(arr []int) int {
+	sum := 0
+	for _, num := range arr {
+		sum = add(sum, num)
+	}
+	return sum
+}
+
+// capitalize function: capitalizes each word in the string
+func capitalize(s string) string {
+	return strings.Title(s)
+}
+
+// reverse function: reverses the string
+func reverse(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
+}
+
+// capitalizeAndReverse function: capitalizes and then reverses the string, calls capitalize and reverse functions
+func capitalizeAndReverse(s string) string {
+	capitalized := capitalize(s)
+	return reverse(capitalized)
+}
+
+// Person struct: contains basic person information
+type Person struct {
+	FirstName string
+	LastName  string
+	Age       int
+}
+
+// FullName method: returns the full name of the person
+func (p Person) FullName() string {
+	return p.FirstName + " " + p.LastName
+}
+
+// Introduce method: returns an introduction string, calls FullName method
+func (p Person) Introduce() string {
+	return fmt.Sprintf("Hello, my name is %s and I am %d years old.", p.FullName(), p.Age)
 }
 
 func main() {
-    input := " 1, 2, 3, 4, 5 "
-    result, ok := parseAndCalculateSum(input)
-    if !ok {
-        fmt.Println("Error: invalid input format")
-        return
-    }
-    fmt.Println("Sum of squares:", result)
+	// Arithmetic functions
+	fmt.Println("Add 10 + 5 =", add(10, 5))
+	fmt.Println("Subtract 10 - 5 =", subtract(10, 5))
+	fmt.Println("Multiply 10 * 5 =", multiply(10, 5))
+
+	// Sum array
+	nums := []int{1, 2, 3, 4, 5}
+	fmt.Println("Sum of array =", sumArray(nums))
+
+	// String functions
+	s := "hello world"
+	fmt.Println("Capitalized:", capitalize(s))
+	fmt.Println("Reversed:", reverse(s))
+	fmt.Println("Capitalized and Reversed:", capitalizeAndReverse(s))
+
+	// Struct and method
+	p := Person{FirstName: "John", LastName: "Doe", Age: 30}
+	fmt.Println("Full Name:", p.FullName())
+	fmt.Println(p.Introduce())
 }

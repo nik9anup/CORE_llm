@@ -12,6 +12,9 @@ import tree_sitter_go as tsgo
 from tree_sitter import Language, Parser
 from llama_index.core import PromptTemplate
 import extract_relevant_part
+import pysqlite3
+import sys
+sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 # Set environment variables
 os.environ["ANTHROPIC_API_KEY"] = os.getenv("ANTHROPIC_API_KEY")
@@ -23,7 +26,7 @@ pr_number = int(os.getenv("PR_NUMBER"))
 
 # Define GitHub client
 g = Github(github_token)
-repo = g.get_repo("owner/repo")  # replace with your repo
+repo = g.get_repo("LLMs-for-Code-Review-PIL/CORE_llm")  # replace with your repo
 
 # Get the PR data
 pr = repo.get_pull(pr_number)
@@ -32,7 +35,7 @@ pr = repo.get_pull(pr_number)
 files = pr.get_files()
 go_code_in = ""
 for file in files:
-    if file.filename.endswith(".go"):
+    if file.filename=="go_code_in.go":
         go_code_in += file.patch
 
 # Initialize ChromaDB client and collection
@@ -56,94 +59,6 @@ Do not include any reasoning, comments or text in the output except the code.
 Do not include a main function.
 Kindly use package main BEFORE the imported packages.
 
-Here is an example for your reference in which the manual parsing and validation of JSON is made concise using json.Unmarshal() function from encoding/json library while maintaining functionality and semantics:
-
-Example Input:
-package main
-
-import (
-    "fmt"
-    "errors"
-    "strings"
-)
-
-func parseAndValidateJSON(jsonStr string) (map[string]string, error) {{
-    jsonStr = removeWhitespace(jsonStr)
-
-    if !startsWith(jsonStr, "{{") || !endsWith(jsonStr, "}}") {{
-        return nil, errors.New("invalid JSON format")
-    }}
-
-    jsonStr = removeBraces(jsonStr)
-
-    pairs := splitIntoPairs(jsonStr)
-    result := make(map[string]string)
-
-    for _, pair := range pairs {{
-        kv := splitKeyValue(pair)
-        if len(kv) != 2 {{
-            return nil, errors.New("invalid key-value pair")
-        }}
-
-        key := removeQuotes(kv[0])
-        value := removeQuotes(kv[1])
-
-        if key == "" {{
-            return nil, errors.New("invalid key")
-        }}
-
-        result[key] = value
-    }}
-
-    return result, nil
-}}
-
-// Helper functions (simulated std library functions)
-func removeWhitespace(str string) string {{
-    return strings.ReplaceAll(str, " ", "")
-}}
-
-func startsWith(str, prefix string) bool {{
-    return strings.HasPrefix(str, prefix)
-}}
-
-func endsWith(str, suffix string) bool {{
-    return strings.HasSuffix(str, suffix)
-}}
-
-func removeBraces(str string) string {{
-    return str[1 : len(str)-1]
-}}
-
-func splitIntoPairs(str string) []string {{
-    return strings.Split(str, ",")
-}}
-
-func splitKeyValue(str string) []string {{
-    return strings.Split(str, ":")
-}}
-
-func removeQuotes(str string) string {{
-    return strings.Trim(str, "\"")
-}}
-
-Example Output:
-package main
-
-import (
-    "fmt"
-    "encoding/json"
-)
-
-func parseAndValidateJSON(jsonStr string) (map[string]string, error) {{
-    var data map[string]string
-    if err := json.Unmarshal([]byte(jsonStr), &data); err != nil {{
-        return nil, errors.New("invalid JSON format")
-    }}
-    return data, nil
-}}
-
-input code snippet: 
 {query_str}
 """
 
