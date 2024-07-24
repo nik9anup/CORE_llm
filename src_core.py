@@ -23,7 +23,7 @@ pr_number = int(os.getenv("PR_NUMBER"))
 
 # Define GitHub client
 g = Github(github_token)
-repo = g.get_repo("owner/repo")  # replace with your repo
+repo = g.get_repo("nik9anup/CORE_llm")  # replace with your repo
 
 # Get the PR data
 pr = repo.get_pull(pr_number)
