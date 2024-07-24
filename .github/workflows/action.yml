@@ -37,6 +37,8 @@ jobs:
           pip install -q github
           pip install -q PyGitHub
           pip install -q nbconvert
+          pip install -q tree-sitter-go
+          pip install -q tree-sitter
           pip install -q cython
           pip install -q pysqlite3
            
