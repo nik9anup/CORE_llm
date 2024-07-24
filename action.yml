@@ -3,32 +3,38 @@ description: Tool to refactor code and suggest suitable go packages in place of 
 
 on:
   pull_request:
-    types: [opened, synchronize]
-
+    types: [opened, synchronize] 
+    
+inputs:
+  GOOGLE_API_KEY:
+    description: 'Google API Key'
+    required: true
+  GITHUB_TOKEN:
+    description: 'Github token'
+    required: true
+  ANTHROPIC_API_KEY:
+    description: 'Google API Key'
+    required: true
+ 
 jobs:
   run-notebook:
-    runs-on:  ubuntu-latest
+    runs-on:  ubuntu-latest 
 
-    
-   inputs:
-    GOOGLE_API_KEY:
-      description: 'GOOGLE API Key'
-      required: true
-    GITHUB_TOKEN:
-      description: 'Github token'
-      required: true
-    ANTHROPIC_API_KEY:
-      description: 'ANTHROPIC API Key'
-      required: true
-
-    steps:
+    steps: 
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10.12'
+          python-version: '3.10.14'
+
+      - name: Create and activate virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+
 
       - name: Install dependencies
         run: |
@@ -40,17 +46,20 @@ jobs:
           pip install -q chromadb
           pip install -q llama-index-vector-stores-chroma
           pip install -q llama-index-llms-anthropic
-          pip install -q PyGithub
           pip install -q github
+          pip install -q PyGitHub
           pip install -q nbconvert
+          pip install -q tree-sitter-go
+          pip install -q tree-sitter
           pip install -q cython
-        
-          
+          pip install -q pysqlite3
+           
+     
       - name: Set environment variables
         run: |
-          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
-          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> $GITHUB_ENV
-          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
-          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "ANTHROPIC_API_KEY=${{ inputs.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
+          echo "GOOGLE_API_KEY=${{ inputs.GOOGLE_API_KEY }}" >> $GITHUB_ENV
+          echo "GITHUB_TOKEN=${{ inputs.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "PR_NUMBER=${{ inputs.event.pull_request.number }}" >> $GITHUB_ENV
       - name: Run Jupyter Notebook
-        run: python src_core.py
+        run:  python src_core.py
