@@ -64,7 +64,7 @@ func trimWhitespace(str string) string {
 
 func main() {
     input := " 1, 2, 3, 4, 5 "
-    fmt.Println("Hello world!")
+    fmt.Println("Hello world!")  
     result, ok := parseAndCalculateSum(input)
     if !ok {
         fmt.Println("Error: invalid input format")
