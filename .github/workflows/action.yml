@@ -23,17 +23,8 @@ jobs:
           python3 -m ipykernel install --user
           pip install -r requirements.txt
           pip install -e 
-          pip install -q llama-index-llms-gemini
-          pip install -q llama-index google-generativeai
-          pip install -q llama-index-embeddings-gemini
-          pip install -q chromadb
-          pip install -q llama-index-vector-stores-chroma
-          pip install -q llama-index-llms-anthropic
           pip install -q PyGithub
           pip install -q github==1.2.3
-          pip install -q nbconvert
-          pip install -q cython
-          pip install -q aiohttp==3.8.1
           pip install -q pysqlite3-binary
           
      
