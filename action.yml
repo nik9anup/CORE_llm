@@ -2,8 +2,8 @@ name: CORE-Refactor
 description: Tool to refactor code and suggest suitable go packages in place of user code to make source code concise and efficient.
 
 on:
-  workflow_dispatch:
-    inputs:
+  workflow_call:
+    secrets:
       GOOGLE_API_KEY:
         description: 'Google API Key'
         required: true
@@ -11,8 +11,9 @@ on:
         description: 'Github token'
         required: true
       ANTHROPIC_API_KEY:
-        description: 'Google API Key'
+        description: 'Anthropic API Key'
         required: true
+
   pull_request:
       types: [opened, synchronize] 
   
@@ -59,9 +60,9 @@ jobs:
      
       - name: Set environment variables
         run: |
-          echo "ANTHROPIC_API_KEY=${{ inputs.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
-          echo "GOOGLE_API_KEY=${{ inputs.GOOGLE_API_KEY }}" >> $GITHUB_ENV
-          echo "GITHUB_TOKEN=${{ inputs.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> $GITHUB_ENV
+          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
           echo "PR_NUMBER=${{ inputs.event.pull_request.number }}" >> $GITHUB_ENV
       - name: Run Jupyter Notebook
         run:  python src_core.py
