@@ -53,13 +53,18 @@ splitter = CodeSplitter.from_defaults(language='go', parser=parser)
 
 # Define the prompt template
 text_qa_template_str = """
-You are a code refactoring assistant specialized in Golang. Your task is to review the provided code and suggest using appropriate functions from the language's standard library or popular packages to make the code more concise and efficient, while maintaining its functionality.
+You are a code refactoring assistant specialised in golang. Your task is to review the provided code and suggest using appropriate functions from the language's standard library or popular packages to make the code more concise and efficient, while maintaining its functionality.\n
+Do not include any reasoning, comments or text in the output except the code.\n
+Do not add any other function that isn't there in the input. \n
+Do not remove any lines of code from user input unless replacing it with a library function. \n
+Kindly use package main BEFORE the imported packages. \n
 
-Do not include any reasoning, comments or text in the output except the code.
-Do not include a main function.
-Kindly use package main BEFORE the imported packages.
 
+input code snippet: \n
 {query_str}
+
+
+
 """
 
 text_qa_template = PromptTemplate(text_qa_template_str)
@@ -67,8 +72,6 @@ text_qa_template = PromptTemplate(text_qa_template_str)
 # Extract relevant Go code parts
 query_str = ""
 go_codes_out = extract_relevant_part.get_relevant_part(go_code_in, parser)
-for go_code_out in go_codes_out:
-    query_str += go_code_out + "\n\n"
 
 # Initialize tokenizer and models
 tokenizer = Anthropic().tokenizer
@@ -83,6 +86,24 @@ index = VectorStoreIndex.from_vector_store(vector_store, embed_model=embed_model
 # Initialize query engine
 query_engine = index.as_query_engine(text_qa_template=text_qa_template, llm=llm)
 
-# Query the engine with the extracted code
-response = query_engine.query(query_str)
-print(response.response)
+result = []
+for go_code_out in go_codes_out:
+    query_str = "".join(go_code_out)
+    response=query_engine.query(query_str)
+    result.append(response.response)
+
+text_qa_template_str_1 = """Make one meaningful and concise go language snippet by combining all the code snippets you have received in the query. \n\n
+Do not include any reasoning, comments or text in the output except the code.\n  
+Do not remove any lines of code. \n
+
+input code list: \n
+{query_str}
+"""
+
+text_qa_template_1 = PromptTemplate(text_qa_template_str_1)
+
+query_engine_1 = index.as_query_engine(text_qa_template=text_qa_template_1,llm=llm)
+
+query_str_1 = str(result)
+response_1 = query_engine_1.query(query_str_1)
+print(response_1.response)
