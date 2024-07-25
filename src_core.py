@@ -22,7 +22,7 @@ os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 # Get GitHub token and PR number
 github_token = os.getenv("GITHUB_TOKEN")
-pr_number = os.getenv("PR_NUMBER")
+pr_number = int(os.getenv("PR_NUMBER"))
 #repo_owner = os.getenv("REPO_OWNER")
 repo_name = os.getenv("REPO_NAME")
 
