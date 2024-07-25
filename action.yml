@@ -63,5 +63,5 @@ runs:
         #REPO_OWNER: ${{ inputs.github.event.repository.owner }}
         #PR_NUMBER: ${{ inputs.github.event.number }}
         
-      run: python /home/runner/work/CORE-llm/CORE-llm/src_core.py
+      run: python ${{ github.workspace }}/src_core.py
       shell: bash
