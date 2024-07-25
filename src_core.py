@@ -23,13 +23,13 @@ os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 # Get GitHub token and PR number
 github_token = os.getenv("GITHUB_TOKEN")
 pr_number = int(os.getenv("PR_NUMBER"))
-repo_owner = os.getenv("REPO_OWNER")
+#repo_owner = os.getenv("REPO_OWNER")
 repo_name = os.getenv("REPO_NAME")
 
 # Define GitHub client
 g = Github(github_token)
-repo = g.get_repo(f"{repo_owner}/{repo_name}")
 
+repo = g.get_repo(repo_name)
 
 # Get the PR data
 pr = repo.get_pull(pr_number)
