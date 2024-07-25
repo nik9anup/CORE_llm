@@ -58,8 +58,9 @@ jobs:
      
       - name: Set environment variables
         env: 
-          GOOGLE_API_KEY: "${{ secrets.GOOGLE_API_KEY }}"
-          ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          secrets:
+                GOOGLE_API_KEY: "${{ secrets.GOOGLE_API_KEY }}"
+                ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
+                GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Run Jupyter Notebook
         run:  python src_core.py
