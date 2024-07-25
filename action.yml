@@ -11,9 +11,9 @@ inputs:
   GITHUB_TOKEN:
     description: 'GITHUB API key'
     required: true
-  #REPO_NAME:
-   # description: 'Repo name'
-    #required: true
+  REPO_NAME:
+    description: 'Repo name'
+    required: true
   #REPO_OWNER:
    # description: 'repo owner'
     #required: true
@@ -59,7 +59,7 @@ runs:
         GOOGLE_API_KEY: ${{ inputs.GOOGLE_API_KEY}}
         ANTHROPIC_API_KEY: ${{ inputs.ANTHROPIC_API_KEY }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-       # REPO_NAME: ${{ inputs.github.event.repository.name }}
+        REPO_NAME: ${{ inputs.github.event.repository.name }}
         #REPO_OWNER: ${{ inputs.github.event.repository.owner }}
         #PR_NUMBER: ${{ inputs.github.event.number }}
         
