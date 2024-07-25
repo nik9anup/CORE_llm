@@ -38,7 +38,7 @@ pr = repo.get_pull(pr_number)
 files = pr.get_files()
 go_code_in = ""
 for file in files:
-    if file.filename.endsWith(".go"):
+    if file.filename.endswith(".go"):
         go_code_in += file.patch
 
 # Initialize ChromaDB client and collection
