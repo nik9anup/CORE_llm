@@ -4,52 +4,39 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
-	"strings"
+	"strconv"
+	"golang.org/x/exp/slices"
 )
 
-func readLines(filename string) ([]string, error) {
+func readInts(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var lines []string
+	var ints []int
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		num, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return nil, err
+		}
+		ints = append(ints, num)
 	}
-	return lines, scanner.Err()
+	return ints, scanner.Err()
 }
 
 func main() {
-	lines, err := readLines("input.txt")
+	nums, err := readInts("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	// using the standard library sort function
-	sort.Strings(lines)
-
-	// using the standard library to remove duplicates
-	lines = removeDuplicatesUsingLibrary(lines)
-
-	for _, line := range lines {
-		fmt.Println(line)
-	}
-}
-
-// helper function to remove duplicates using standard library
-func removeDuplicatesUsingLibrary(strs []string) []string {
-	var result []string
-	encountered := map[string]bool{}
-	for _, str := range strs {
-		if !encountered[str] {
-			encountered[str] = true
-			result = append(result, str)
-		}
-	}
-	return result
+	// using the standard library functions
+	fmt.Println("Sum:", slices.Sum(nums))
+	fmt.Println("Average:", slices.Average(nums))
+	fmt.Println("Max:", slices.Max(nums))
+	fmt.Println("Min:", slices.Min(nums))
 }

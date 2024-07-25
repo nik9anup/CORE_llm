@@ -4,58 +4,63 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
-func readLines(filename string) ([]string, error) {
+func readInts(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var lines []string
+	var ints []int
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		num, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return nil, err
+		}
+		ints = append(ints, num)
 	}
-	return lines, scanner.Err()
+	return ints, scanner.Err()
 }
 
-// manually implement a sorting function
-func sortStrings(strs []string) {
-	for i := 0; i < len(strs); i++ {
-		for j := i + 1; j < len(strs); j++ {
-			if strs[i] > strs[j] {
-				strs[i], strs[j] = strs[j], strs[i]
-			}
-		}
+// manually implementing sum function
+func sum(nums []int) int {
+	total := 0
+	for _, num := range nums {
+		total += num
 	}
+	return total
 }
 
-// manually remove duplicates
-func removeDuplicates(strs []string) []string {
-	var result []string
-	encountered := map[string]bool{}
-	for _, str := range strs {
-		if !encountered[str] {
-			encountered[str] = true
-			result = append(result, str)
+// manually implementing average function
+func average(nums []int) float64 {
+	total := sum(nums)
+	return float64(total) / float64(len(nums))
+}
+
+
+// manually implementing min function
+func min(nums []int) int {
+	minVal := nums[0]
+	for _, num := range nums {
+		if num < minVal {
+			minVal = num
 		}
 	}
-	return result
+	return minVal
 }
 
 func main() {
-	lines, err := readLines("input.txt")
+	nums, err := readInts("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	sortStrings(lines)
-	lines = removeDuplicates(lines)
-
-	for _, line := range lines {
-		fmt.Println(line)
-	}
+	fmt.Println("Sum:", sum(nums))
+	fmt.Println("Average:", average(nums))
+	fmt.Println("Min:", min(nums))
 }
