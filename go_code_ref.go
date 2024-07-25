@@ -4,50 +4,69 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
-	"strconv"
+	"strings"
 )
 
-func readInts(filename string) ([]int, error) {
+func readLines(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var ints []int
+	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		num, err := strconv.Atoi(scanner.Text())
-		if err != nil {
-			return nil, err
-		}
-		ints = append(ints, num)
+		lines = append(lines, scanner.Text())
 	}
-	return ints, scanner.Err()
+	return lines, scanner.Err()
+}
+
+func writeLines(lines []string, filename string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	for _, line := range lines {
+		_, err := writer.WriteString(line + "\n")
+		if err != nil {
+			return err
+		}
+	}
+	return writer.Flush()
+}
+
+// using the strings package from the standard library
+func reverseString(s string) string {
+	return reverseUsingLibrary(s)
+}
+
+// helper function to reverse a string using standard library functions
+func reverseUsingLibrary(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
 }
 
 func main() {
-	nums, err := readInts("input.txt")
+	lines, err := readLines("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	// Using the standard library function to calculate the sum
-	sum := 0
-	for _, num := range nums {
-		sum += num
+	var reversedLines []string
+	for _, line := range lines {
+		reversedLines = append(reversedLines, reverseString(line))
 	}
 
-	// Calculating the average
-	average := float64(sum) / float64(len(nums))
-
-	// Using the standard library sort function to find max and min
-	sort.Ints(nums)
-	min := nums[0]
-
-	fmt.Println("Sum:", sum)
-	fmt.Println("Average:", average)
-	fmt.Println("Min:", min)
+	err = writeLines(reversedLines, "output.txt")
+	if err != nil {
+		fmt.Println("Error writing file:", err)
+	}
 }
