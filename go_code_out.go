@@ -3,36 +3,13 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
-	"sort"
 	"strings"
-	"time"
 )
 
-func main() {
-	dates, err := readDates("dates.txt")
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return
-	}
-
-	parsedDates, err := parseDates(dates)
-	if err != nil {
-		fmt.Println("Error parsing dates:", err)
-		return
-	}
-
-	sort.Slice(parsedDates, func(i, j int) bool {
-		return parsedDates[i].Before(parsedDates[j])
-	})
-
-	fmt.Println("Sorted Dates:")
-	for _, date := range parsedDates {
-		fmt.Println(date.Format("2006-01-02"))
-	}
-}
-
-func readDates(filename string) ([]string, error) {
+func readURLs(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -40,21 +17,42 @@ func readDates(filename string) ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	dates := make([]string, 0)
+	var urls []string
 	for scanner.Scan() {
-		dates = append(dates, scanner.Text())
+		urls = append(urls, scanner.Text())
 	}
-	return dates, scanner.Err()
+	return urls, scanner.Err()
 }
 
-func parseDates(dates []string) ([]time.Time, error) {
-	parsedDates := make([]time.Time, len(dates))
-	for i, date := range dates {
-		parsedDate, err := time.Parse("2006-01-02", date)
-		if err != nil {
-			return nil, err
-		}
-		parsedDates[i] = parsedDate
+func fetchURL(url string) (string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
 	}
-	return parsedDates, nil
+	defer resp.Body.Close()
+	content, err := ioutil.ReadAll(resp.Body)
+	return string(content), err
+}
+
+func countWords(content string) int {
+	return len(strings.Fields(content))
+}
+
+func main() {
+	urls, err := readURLs("urls.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	for _, url := range urls {
+		content, err := fetchURL(url)
+		if err != nil {
+			fmt.Println("Error fetching URL:", err)
+			continue
+		}
+
+		wordCount := countWords(content)
+		fmt.Printf("URL: %s\nWord Count: %d\n", url, wordCount)
+	}
 }

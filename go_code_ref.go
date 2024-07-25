@@ -3,58 +3,63 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"net/http"
 	"os"
-	"sort"
-	"time"
+	"strings"
 )
 
-func readDates(filename string) ([]string, error) {
+func readURLs(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var dates []string
+	var urls []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		dates = append(dates, scanner.Text())
+		urls = append(urls, scanner.Text())
 	}
-	return dates, scanner.Err()
+	return urls, scanner.Err()
 }
 
-func parseDates(dates []string) ([]time.Time, error) {
-	var parsedDates []time.Time
-	for _, date := range dates {
-		parsedDate, err := time.Parse("2006-01-02", date)
-		if err != nil {
-			return nil, err
-		}
-		parsedDates = append(parsedDates, parsedDate)
+// using net/http and bufio to fetch and read URL content
+func fetchAndCountWords(url string) (int, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return 0, err
 	}
-	return parsedDates, nil
+	defer resp.Body.Close()
+
+	scanner := bufio.NewScanner(resp.Body)
+	scanner.Split(bufio.ScanWords)
+
+	wordCount := 0
+	for scanner.Scan() {
+		wordCount++
+	}
+
+	if err := scanner.Err(); err != nil {
+		return 0, err
+	}
+
+	return wordCount, nil
 }
 
 func main() {
-	dates, err := readDates("dates.txt")
+	urls, err := readURLs("urls.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	parsedDates, err := parseDates(dates)
-	if err != nil {
-		fmt.Println("Error parsing dates:", err)
-		return
-	}
+	for _, url := range urls {
+		wordCount, err := fetchAndCountWords(url)
+		if err != nil {
+			fmt.Println("Error fetching URL:", err)
+			continue
+		}
 
-	// sort the dates using sort.Slice
-	sort.Slice(parsedDates, func(i, j int) bool {
-		return parsedDates[i].Before(parsedDates[j])
-	})
-
-	fmt.Println("Sorted Dates:")
-	for _, date := range parsedDates {
-		fmt.Println(date.Format("2006-01-02"))
+		fmt.Printf("URL: %s\nWord Count: %d\n", url, wordCount)
 	}
 }

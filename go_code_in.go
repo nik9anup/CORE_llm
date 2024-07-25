@@ -3,67 +3,63 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
-	"time"
 )
 
-func readDates(filename string) ([]string, error) {
+func readURLs(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var dates []string
+	var urls []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		dates = append(dates, scanner.Text())
+		urls = append(urls, scanner.Text())
 	}
-	return dates, scanner.Err()
+	return urls, scanner.Err()
 }
 
-// manually implementing date parsing function
-func parseDates(dates []string) ([]time.Time, error) {
-	var parsedDates []time.Time
-	for _, date := range dates {
-		parsedDate, err := time.Parse("2006-01-02", date)
-		if err != nil {
-			return nil, err
-		}
-		parsedDates = append(parsedDates, parsedDate)
+// manually implementing HTTP fetching function
+func fetchURL(url string) (string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
 	}
-	return parsedDates, nil
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
 }
 
-// manually implementing sorting function
-func sortDates(dates []time.Time) {
-	for i := 0; i < len(dates); i++ {
-		for j := i + 1; j < len(dates); j++ {
-			if dates[i].After(dates[j]) {
-				dates[i], dates[j] = dates[j], dates[i]
-			}
-		}
-	}
+// manually implementing word counting function
+func countWords(text string) int {
+	words := strings.Fields(text)
+	return len(words)
 }
 
 func main() {
-	dates, err := readDates("dates.txt")
+	urls, err := readURLs("urls.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	parsedDates, err := parseDates(dates)
-	if err != nil {
-		fmt.Println("Error parsing dates:", err)
-		return
-	}
+	for _, url := range urls {
+		content, err := fetchURL(url)
+		if err != nil {
+			fmt.Println("Error fetching URL:", err)
+			continue
+		}
 
-	sortDates(parsedDates)
-
-	fmt.Println("Sorted Dates:")
-	for _, date := range parsedDates {
-		fmt.Println(date.Format("2006-01-02"))
+		wordCount := countWords(content)
+		fmt.Printf("URL: %s\nWord Count: %d\n", url, wordCount)
 	}
 }
