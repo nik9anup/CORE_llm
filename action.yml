@@ -1,17 +1,6 @@
 name: CORE-Refactor
 description: Tool to refactor code and suggest suitable go packages in place of user code to make source code concise and efficient.
 
-secrets:
-      GOOGLE_API_KEY:
-        description: 'Google API Key'
-        required: true
-      GITHUB_TOKEN:
-        description: 'Github token'
-        required: true
-      ANTHROPIC_API_KEY:
-        description: 'Anthropic API Key'
-        required: true
-
 on:
   pull_request:
       types: [opened, synchronize] 
