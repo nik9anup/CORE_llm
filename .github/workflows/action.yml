@@ -1,21 +1,16 @@
 name: Run Python
 
+
 on:
-  
   pull_request:
     types: [opened, synchronize] 
 
-  workflow_call:
-    secrets:
-      GOOGLE_API_KEY:
-        description: 'Google API Key'
-        required: true
-      GITHUB_TOKEN:
-        description: 'Github token'
-        required: true
-      ANTHROPIC_API_KEY:
-        description: 'Google API Key'
-        required: true
+  
+permissions:
+  id-token: write
+  pull-requests: write
+  contents: read
+  actions: read
 
  
 jobs:
