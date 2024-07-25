@@ -59,9 +59,9 @@ runs:
         GOOGLE_API_KEY: ${{ inputs.GOOGLE_API_KEY}}
         ANTHROPIC_API_KEY: ${{ inputs.ANTHROPIC_API_KEY }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-        REPO_NAME: ${{ inputs.github.event.repository.name }}
-        #REPO_OWNER: ${{ inputs.github.event.repository.owner }}
-        PR_NUMBER: ${{ inputs.github.event.number }}
+        REPO_NAME: ${{ inputs.github.repository }}
+           #REPO_OWNER: ${{ github.event.repository_owner }}
+        PR_NUMBER: ${{ inputs.github.event.pull_request.number }}
         
       run: python ${{ github.action_path }}/src_core.py
       shell: bash
