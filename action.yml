@@ -1,5 +1,3 @@
-called : 
-
 name: 'CORE-Refactor'
 description: 'Tool to refactor code and suggest suitable go packages in place of user code to make source code concise and efficient.'
 
