@@ -17,9 +17,9 @@ inputs:
   #REPO_OWNER:
    # description: 'repo owner'
     #required: true
-  #PR_NUMBER:
-   # description: 'pr number'
-   # required: true
+  PR_NUMBER:
+   description: 'pr number'
+   required: true
 
 runs:
   using: "composite"
@@ -61,7 +61,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         REPO_NAME: ${{ inputs.github.event.repository.name }}
         #REPO_OWNER: ${{ inputs.github.event.repository.owner }}
-        #PR_NUMBER: ${{ inputs.github.event.number }}
+        PR_NUMBER: ${{ inputs.github.event.number }}
         
       run: python ${{ github.action_path }}/src_core.py
       shell: bash
