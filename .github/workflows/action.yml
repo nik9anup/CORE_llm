@@ -1,6 +1,10 @@
 name: Run Python
 
 on:
+  
+  pull_request:
+    types: [opened, synchronize] 
+
   workflow_call:
     secrets:
       GOOGLE_API_KEY:
@@ -13,8 +17,6 @@ on:
         description: 'Google API Key'
         required: true
 
-  pull_request:
-    types: [opened, synchronize] 
  
 jobs:
   run-notebook:
