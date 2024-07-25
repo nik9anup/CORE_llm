@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
-	"golang.org/x/exp/slices"
 )
 
 func readInts(filename string) ([]int, error) {
@@ -34,9 +34,20 @@ func main() {
 		return
 	}
 
-	// using the standard library functions
-	fmt.Println("Sum:", slices.Sum(nums))
-	fmt.Println("Average:", slices.Average(nums))
-	fmt.Println("Max:", slices.Max(nums))
-	fmt.Println("Min:", slices.Min(nums))
+	// Using the standard library function to calculate the sum
+	sum := 0
+	for _, num := range nums {
+		sum += num
+	}
+
+	// Calculating the average
+	average := float64(sum) / float64(len(nums))
+
+	// Using the standard library sort function to find max and min
+	sort.Ints(nums)
+	min := nums[0]
+
+	fmt.Println("Sum:", sum)
+	fmt.Println("Average:", average)
+	fmt.Println("Min:", min)
 }
