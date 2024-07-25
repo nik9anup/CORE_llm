@@ -5,67 +5,56 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strings"
+	"time"
 )
 
-func readWords(filename string) ([]string, error) {
+func readDates(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var words []string
+	var dates []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		words = append(words, strings.Fields(scanner.Text())...)
+		dates = append(dates, scanner.Text())
 	}
-	return words, scanner.Err()
+	return dates, scanner.Err()
 }
 
-func countFrequencies(words []string) map[string]int {
-	frequencies := make(map[string]int)
-	for _, word := range words {
-		frequencies[word]++
+func parseDates(dates []string) ([]time.Time, error) {
+	var parsedDates []time.Time
+	for _, date := range dates {
+		parsedDate, err := time.Parse("2006-01-02", date)
+		if err != nil {
+			return nil, err
+		}
+		parsedDates = append(parsedDates, parsedDate)
 	}
-	return frequencies
-}
-
-func sortWordsByFrequency(frequencies map[string]int) []string {
-	type wordFrequency struct {
-		word  string
-		count int
-	}
-
-	var wordFrequencies []wordFrequency
-	for word, count := range frequencies {
-		wordFrequencies = append(wordFrequencies, wordFrequency{word, count})
-	}
-
-	// sort by frequency in descending order using sort.Slice
-	sort.Slice(wordFrequencies, func(i, j int) bool {
-		return wordFrequencies[i].count > wordFrequencies[j].count
-	})
-
-	var sortedWords []string
-	for _, wf := range wordFrequencies {
-		sortedWords = append(sortedWords, wf.word)
-	}
-	return sortedWords
+	return parsedDates, nil
 }
 
 func main() {
-	words, err := readWords("input.txt")
+	dates, err := readDates("dates.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	frequencies := countFrequencies(words)
-	sortedWords := sortWordsByFrequency(frequencies)
+	parsedDates, err := parseDates(dates)
+	if err != nil {
+		fmt.Println("Error parsing dates:", err)
+		return
+	}
 
-	fmt.Println("Word Frequencies:")
-	for _, word := range sortedWords {
-		fmt.Printf("%s: %d\n", word, frequencies[word])
+	// sort the dates using sort.Slice
+	sort.Slice(parsedDates, func(i, j int) bool {
+		return parsedDates[i].Before(parsedDates[j])
+	})
+
+	fmt.Println("Sorted Dates:")
+	for _, date := range parsedDates {
+		fmt.Println(date.Format("2006-01-02"))
 	}
 }
