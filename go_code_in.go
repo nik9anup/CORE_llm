@@ -66,6 +66,14 @@ func (p Person) Introduce() string {
 	return fmt.Sprintf("Hello, my name is %s and I am %d years old.", p.FullName(), p.Age)
 }
 
+func POWER(num int, power int) int {
+   var result int = 1
+   if power != 0 {
+        result = (num * POWER(num, power-1))
+   }
+   return result
+}
+
 func main() {
 	// Arithmetic functions
 	fmt.Println("Add 10 + 5 =", add(10, 5))
