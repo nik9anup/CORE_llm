@@ -43,12 +43,10 @@ jobs:
           pip install -q tree-sitter
           pip install -q cython
           pip install -q pysqlite3
-           
-     
-      - name: Set environment variables
-        env: 
-            GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-            ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Jupyter Notebook
+        env: 
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:  python src_core.py
