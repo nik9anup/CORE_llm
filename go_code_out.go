@@ -4,28 +4,26 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
+	"sort"
+	"strconv"
 )
 
 func main() {
-	lines, err := readLines("input.txt")
+	nums, err := readInts("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	reversedLines := make([]string, len(lines))
-	for i, line := range lines {
-		reversedLines[i] = strings.Reverse(line)
-	}
+	sort.Ints(nums)
 
-	err = writeLines(reversedLines, "output.txt")
-	if err != nil {
-		fmt.Println("Error writing file:", err)
-	}
+	medianValue := median(nums)
+
+	fmt.Println("Sorted:", nums)
+	fmt.Println("Median:", medianValue)
 }
 
-func readLines(filename string) ([]string, error) {
+func readInts(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -33,24 +31,29 @@ func readLines(filename string) ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var lines []string
+	scanner.Split(bufio.ScanWords)
+	var ints []int
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		num, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return nil, err
+		}
+		ints = append(ints, num)
 	}
-	return lines, scanner.Err()
+	return ints, scanner.Err()
 }
 
-func writeLines(lines []string, filename string) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
+func sortInts(nums []int) {
+	sort.Ints(nums)
+}
 
-	writer := bufio.NewWriter(file)
-	_, err = writer.WriteString(strings.Join(lines, "\n") + "\n")
-	if err != nil {
-		return err
+func median(nums []int) float64 {
+	n := len(nums)
+	if n == 0 {
+		return 0
 	}
-	return writer.Flush()
+	if n%2 == 0 {
+		return (float64(nums[n/2-1]) + float64(nums[n/2])) / 2
+	}
+	return float64(nums[n/2])
 }

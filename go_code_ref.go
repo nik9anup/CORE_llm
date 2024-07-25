@@ -4,69 +4,47 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
+	"sort"
+	"strconv"
 )
 
-func readLines(filename string) ([]string, error) {
+func readInts(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var lines []string
+	var ints []int
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines, scanner.Err()
-}
-
-func writeLines(lines []string, filename string) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	writer := bufio.NewWriter(file)
-	for _, line := range lines {
-		_, err := writer.WriteString(line + "\n")
+		num, err := strconv.Atoi(scanner.Text())
 		if err != nil {
-			return err
+			return nil, err
 		}
+		ints = append(ints, num)
 	}
-	return writer.Flush()
+	return ints, scanner.Err()
 }
 
-// using the strings package from the standard library
-func reverseString(s string) string {
-	return reverseUsingLibrary(s)
-}
-
-// helper function to reverse a string using standard library functions
-func reverseUsingLibrary(s string) string {
-	runes := []rune(s)
-	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
-		runes[i], runes[j] = runes[j], runes[i]
+func median(nums []int) float64 {
+	sort.Ints(nums)
+	n := len(nums)
+	if n%2 == 0 {
+		return float64(nums[n/2-1]+nums[n/2]) / 2
 	}
-	return string(runes)
+	return float64(nums[n/2])
 }
 
 func main() {
-	lines, err := readLines("input.txt")
+	nums, err := readInts("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	var reversedLines []string
-	for _, line := range lines {
-		reversedLines = append(reversedLines, reverseString(line))
-	}
+	medianValue := median(nums)
 
-	err = writeLines(reversedLines, "output.txt")
-	if err != nil {
-		fmt.Println("Error writing file:", err)
-	}
+	fmt.Println("Sorted:", nums)
+	fmt.Println("Median:", medianValue)
 }
