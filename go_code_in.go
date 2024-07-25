@@ -4,59 +4,73 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
+	"strings"
 )
 
-func readInts(filename string) ([]int, error) {
+func readWords(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var ints []int
+	var words []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		num, err := strconv.Atoi(scanner.Text())
-		if err != nil {
-			return nil, err
-		}
-		ints = append(ints, num)
+		words = append(words, strings.Fields(scanner.Text())...)
 	}
-	return ints, scanner.Err()
+	return words, scanner.Err()
 }
 
-// manually implementing sort function
-func sortInts(nums []int) {
-	for i := 0; i < len(nums); i++ {
-		for j := i + 1; j < len(nums); j++ {
-			if nums[i] > nums[j] {
-				nums[i], nums[j] = nums[j], nums[i]
+// manually implementing frequency counting function
+func countFrequencies(words []string) map[string]int {
+	frequencies := make(map[string]int)
+	for _, word := range words {
+		frequencies[word]++
+	}
+	return frequencies
+}
+
+// manually implementing sorting function
+func sortWordsByFrequency(frequencies map[string]int) []string {
+	type wordFrequency struct {
+		word  string
+		count int
+	}
+
+	var wordFrequencies []wordFrequency
+	for word, count := range frequencies {
+		wordFrequencies = append(wordFrequencies, wordFrequency{word, count})
+	}
+
+	// sort by frequency in descending order
+	for i := 0; i < len(wordFrequencies); i++ {
+		for j := i + 1; j < len(wordFrequencies); j++ {
+			if wordFrequencies[i].count < wordFrequencies[j].count {
+				wordFrequencies[i], wordFrequencies[j] = wordFrequencies[j], wordFrequencies[i]
 			}
 		}
 	}
-}
 
-// manually implementing median finding function
-func median(nums []int) float64 {
-	n := len(nums)
-	if n%2 == 0 {
-		return float64(nums[n/2-1]+nums[n/2]) / 2
+	var sortedWords []string
+	for _, wf := range wordFrequencies {
+		sortedWords = append(sortedWords, wf.word)
 	}
-	return float64(nums[n/2])
+	return sortedWords
 }
 
 func main() {
-	nums, err := readInts("input.txt")
+	words, err := readWords("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	sortInts(nums)
+	frequencies := countFrequencies(words)
+	sortedWords := sortWordsByFrequency(frequencies)
 
-	medianValue := median(nums)
-
-	fmt.Println("Sorted:", nums)
-	fmt.Println("Median:", medianValue)
+	fmt.Println("Word Frequencies:")
+	for _, word := range sortedWords {
+		fmt.Printf("%s: %d\n", word, frequencies[word])
+	}
 }
