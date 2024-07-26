@@ -42,9 +42,10 @@ commits = pr.get_commits()
 for commit in commits:
     files = commit.files
     for file in files:
-        filename = file.filename
-        contents = repo.get_contents(filename, ref=commit.sha).decoded_content
-        go_code_in += contents
+      filename = file.filename
+      if filename.endswith('.go'):
+         contents = repo.get_contents(filename, ref=commit.sha).decoded_content
+         go_code_in += contents
 
 print(go_code_in)
 
