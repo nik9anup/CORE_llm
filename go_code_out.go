@@ -4,11 +4,26 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
-	"math"
+	"sort"
+	"strings"
 )
 
-func readInts(filename string) ([]int, error) {
+func main() {
+	lines, err := readLines("input.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	sort.Strings(lines)
+	lines = removeDuplicates(lines)
+
+	for _, line := range lines {
+		fmt.Println(line)
+	}
+}
+
+func readLines(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -16,42 +31,21 @@ func readInts(filename string) ([]int, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanWords)
-	var ints []int
+	var lines []string
 	for scanner.Scan() {
-		num, err := strconv.Atoi(scanner.Text())
-		if err != nil {
-			return nil, err
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+}
+
+func removeDuplicates(strs []string) []string {
+	encountered := make(map[string]bool, len(strs))
+	result := make([]string, 0, len(strs))
+	for _, str := range strs {
+		if !encountered[str] {
+			encountered[str] = true
+			result = append(result, str)
 		}
-		ints = append(ints, num)
 	}
-	return ints, scanner.Err()
-}
-
-func min(nums []int) int {
-	return int(math.Min(float64(nums[0]), float64(math.Min(float64(nums[1:])...))))
-}
-
-func sum(nums []int) int {
-	var total int
-	for _, num := range nums {
-		total += num
-	}
-	return total
-}
-
-func average(nums []int) float64 {
-	return float64(sum(nums)) / float64(len(nums))
-}
-
-func main() {
-	nums, err := readInts("input.txt")
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return
-	}
-
-	fmt.Println("Sum:", sum(nums))
-	fmt.Println("Average:", average(nums))
-	fmt.Println("Min:", min(nums))
+	return result
 }

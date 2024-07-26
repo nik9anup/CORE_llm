@@ -5,49 +5,51 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strconv"
+	"strings"
 )
 
-func readInts(filename string) ([]int, error) {
+func readLines(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var ints []int
+	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		num, err := strconv.Atoi(scanner.Text())
-		if err != nil {
-			return nil, err
-		}
-		ints = append(ints, num)
+		lines = append(lines, scanner.Text())
 	}
-	return ints, scanner.Err()
+	return lines, scanner.Err()
 }
 
 func main() {
-	nums, err := readInts("input.txt")
+	lines, err := readLines("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	// Using the standard library function to calculate the sum
-	sum := 0
-	for _, num := range nums {
-		sum += num
+	// using the standard library sort function
+	sort.Strings(lines)
+
+	// using the standard library to remove duplicates
+	lines = removeDuplicatesUsingLibrary(lines)
+
+	for _, line := range lines {
+		fmt.Println(line)
 	}
+}
 
-	// Calculating the average
-	average := float64(sum) / float64(len(nums))
-
-	// Using the standard library sort function to find max and min
-	sort.Ints(nums)
-	min := nums[0]
-
-	fmt.Println("Sum:", sum)
-	fmt.Println("Average:", average)
-	fmt.Println("Min:", min)
+// helper function to remove duplicates using standard library
+func removeDuplicatesUsingLibrary(strs []string) []string {
+	var result []string
+	encountered := map[string]bool{}
+	for _, str := range strs {
+		if !encountered[str] {
+			encountered[str] = true
+			result = append(result, str)
+		}
+	}
+	return result
 }

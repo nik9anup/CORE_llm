@@ -4,63 +4,58 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 )
 
-func readInts(filename string) ([]int, error) {
+func readLines(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var ints []int
+	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		num, err := strconv.Atoi(scanner.Text())
-		if err != nil {
-			return nil, err
-		}
-		ints = append(ints, num)
+		lines = append(lines, scanner.Text())
 	}
-	return ints, scanner.Err()
+	return lines, scanner.Err()
 }
 
-// manually implementing sum function
-func sum(nums []int) int {
-	total := 0
-	for _, num := range nums {
-		total += num
-	}
-	return total
-}
-
-// manually implementing average function
-func average(nums []int) float64 {
-	total := sum(nums)
-	return float64(total) / float64(len(nums))
-}
-
-
-// manually implementing min function
-func min(nums []int) int {
-	minVal := nums[0]
-	for _, num := range nums {
-		if num < minVal {
-			minVal = num
+// manually implement a sorting function
+func sortStrings(strs []string) {
+	for i := 0; i < len(strs); i++ {
+		for j := i + 1; j < len(strs); j++ {
+			if strs[i] > strs[j] {
+				strs[i], strs[j] = strs[j], strs[i]
+			}
 		}
 	}
-	return minVal
+}
+
+// manually remove duplicates
+func removeDuplicates(strs []string) []string {
+	var result []string
+	encountered := map[string]bool{}
+	for _, str := range strs {
+		if !encountered[str] {
+			encountered[str] = true
+			result = append(result, str)
+		}
+	}
+	return result
 }
 
 func main() {
-	nums, err := readInts("input.txt")
+	lines, err := readLines("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	fmt.Println("Sum:", sum(nums))
-	fmt.Println("Average:", average(nums))
-	fmt.Println("Min:", min(nums))
+	sortStrings(lines)
+	lines = removeDuplicates(lines)
+
+	for _, line := range lines {
+		fmt.Println(line)
+	}
 }
