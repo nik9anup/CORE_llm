@@ -54,7 +54,7 @@ for commit in commits:
 # Initialize ChromaDB client and collection
 chroma_client = chromadb.PersistentClient(path="./main")
 chroma_collection = chroma_client.get_or_create_collection("astchroma")
-documents = SimpleDirectoryReader('/home/runner/work/_actions/LLMs-for-Code-Review-PIL/CORE_llm/d1/data').load_data()
+documents = SimpleDirectoryReader('data').load_data()
 
 # Define the Go language and parser
 GO_LANGUAGE = Language(tsgo.language())
