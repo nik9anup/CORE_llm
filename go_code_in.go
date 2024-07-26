@@ -4,59 +4,63 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 )
 
-func readInts(filename string) ([]int, error) {
+func readLines(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var ints []int
+	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		num, err := strconv.Atoi(scanner.Text())
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+}
+
+func writeLines(lines []string, filename string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	for _, line := range lines {
+		_, err := writer.WriteString(line + "\n")
 		if err != nil {
-			return nil, err
-		}
-		ints = append(ints, num)
-	}
-	return ints, scanner.Err()
-}
-
-// manually implementing sort function
-func sortInts(nums []int) {
-	for i := 0; i < len(nums); i++ {
-		for j := i + 1; j < len(nums); j++ {
-			if nums[i] > nums[j] {
-				nums[i], nums[j] = nums[j], nums[i]
-			}
+			return err
 		}
 	}
+	return writer.Flush()
 }
 
-// manually implementing median finding function
-func median(nums []int) float64 {
-	n := len(nums)
-	if n%2 == 0 {
-		return float64(nums[n/2-1]+nums[n/2]) / 2
+// manually implementing string reversal function
+func reverseString(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
 	}
-	return float64(nums[n/2])
+	return string(runes)
 }
 
 func main() {
-	nums, err := readInts("input.txt")
+	lines, err := readLines("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	sortInts(nums)
+	var reversedLines []string
+	for _, line := range lines {
+		reversedLines = append(reversedLines, reverseString(line))
+	}
 
-	medianValue := median(nums)
-
-	fmt.Println("Sorted:", nums)
-	fmt.Println("Median:", medianValue)
+	err = writeLines(reversedLines, "output.txt")
+	if err != nil {
+		fmt.Println("Error writing file:", err)
+	}
 }
