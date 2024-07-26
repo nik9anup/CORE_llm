@@ -11,6 +11,7 @@ from llama_index.core.node_parser import CodeSplitter
 import tree_sitter_go as tsgo
 from tree_sitter import Language, Parser
 from llama_index.core import PromptTemplate
+import time
 import extract_relevant_part
 import pysqlite3
 import sys
@@ -119,4 +120,7 @@ query_engine_1 = index.as_query_engine(text_qa_template=text_qa_template_1,llm=l
 
 query_str_1 = str(result)
 response_1 = query_engine_1.query(query_str_1)
+time.sleep(8)
 print(response_1.response)
+
+result = []
