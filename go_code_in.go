@@ -4,63 +4,63 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
-func readLines(filename string) ([]string, error) {
+func readInts(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var lines []string
+	var ints []int
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		num, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return nil, err
+		}
+		ints = append(ints, num)
 	}
-	return lines, scanner.Err()
+	return ints, scanner.Err()
 }
 
-func writeLines(lines []string, filename string) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
+// manually implementing sum function
+func sum(nums []int) int {
+	total := 0
+	for _, num := range nums {
+		total += num
 	}
-	defer file.Close()
+	return total
+}
 
-	writer := bufio.NewWriter(file)
-	for _, line := range lines {
-		_, err := writer.WriteString(line + "\n")
-		if err != nil {
-			return err
+// manually implementing average function
+func average(nums []int) float64 {
+	total := sum(nums)
+	return float64(total) / float64(len(nums))
+}
+
+
+// manually implementing min function
+func min(nums []int) int {
+	minVal := nums[0]
+	for _, num := range nums {
+		if num < minVal {
+			minVal = num
 		}
 	}
-	return writer.Flush()
-}
-
-// manually implementing string reversal function
-func reverseString(s string) string {
-	runes := []rune(s)
-	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
-		runes[i], runes[j] = runes[j], runes[i]
-	}
-	return string(runes)
+	return minVal
 }
 
 func main() {
-	lines, err := readLines("input.txt")
+	nums, err := readInts("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	var reversedLines []string
-	for _, line := range lines {
-		reversedLines = append(reversedLines, reverseString(line))
-	}
-
-	err = writeLines(reversedLines, "output.txt")
-	if err != nil {
-		fmt.Println("Error writing file:", err)
-	}
+	fmt.Println("Sum:", sum(nums))
+	fmt.Println("Average:", average(nums))
+	fmt.Println("Min:", min(nums))
 }

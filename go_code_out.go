@@ -4,28 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
+	"strconv"
+	"math"
 )
 
-func main() {
-	lines, err := readLines("input.txt")
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return
-	}
-
-	reversedLines := make([]string, len(lines))
-	for i, line := range lines {
-		reversedLines[i] = strings.Reverse(line)
-	}
-
-	err = writeLines(reversedLines, "output.txt")
-	if err != nil {
-		fmt.Println("Error writing file:", err)
-	}
-}
-
-func readLines(filename string) ([]string, error) {
+func readInts(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -33,24 +16,42 @@ func readLines(filename string) ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var lines []string
+	scanner.Split(bufio.ScanWords)
+	var ints []int
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		num, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return nil, err
+		}
+		ints = append(ints, num)
 	}
-	return lines, scanner.Err()
+	return ints, scanner.Err()
 }
 
-func writeLines(lines []string, filename string) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
+func min(nums []int) int {
+	return int(math.Min(float64(nums[0]), float64(math.Min(float64(nums[1:])...))))
+}
 
-	writer := bufio.NewWriter(file)
-	_, err = writer.WriteString(strings.Join(lines, "\n") + "\n")
-	if err != nil {
-		return err
+func sum(nums []int) int {
+	var total int
+	for _, num := range nums {
+		total += num
 	}
-	return writer.Flush()
+	return total
+}
+
+func average(nums []int) float64 {
+	return float64(sum(nums)) / float64(len(nums))
+}
+
+func main() {
+	nums, err := readInts("input.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	fmt.Println("Sum:", sum(nums))
+	fmt.Println("Average:", average(nums))
+	fmt.Println("Min:", min(nums))
 }
