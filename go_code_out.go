@@ -3,13 +3,36 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"os"
+	"sort"
 	"strings"
+	"time"
 )
 
-func readURLs(filename string) ([]string, error) {
+func main() {
+	dates, err := readDates("dates.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	parsedDates, err := parseDates(dates)
+	if err != nil {
+		fmt.Println("Error parsing dates:", err)
+		return
+	}
+
+	sort.Slice(parsedDates, func(i, j int) bool {
+		return parsedDates[i].Before(parsedDates[j])
+	})
+
+	fmt.Println("Sorted Dates:")
+	for _, date := range parsedDates {
+		fmt.Println(date.Format("2006-01-02"))
+	}
+}
+
+func readDates(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -17,42 +40,21 @@ func readURLs(filename string) ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var urls []string
+	dates := make([]string, 0)
 	for scanner.Scan() {
-		urls = append(urls, scanner.Text())
+		dates = append(dates, scanner.Text())
 	}
-	return urls, scanner.Err()
+	return dates, scanner.Err()
 }
 
-func fetchURL(url string) (string, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	content, err := ioutil.ReadAll(resp.Body)
-	return string(content), err
-}
-
-func countWords(content string) int {
-	return len(strings.Fields(content))
-}
-
-func main() {
-	urls, err := readURLs("urls.txt")
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return
-	}
-
-	for _, url := range urls {
-		content, err := fetchURL(url)
+func parseDates(dates []string) ([]time.Time, error) {
+	parsedDates := make([]time.Time, len(dates))
+	for i, date := range dates {
+		parsedDate, err := time.Parse("2006-01-02", date)
 		if err != nil {
-			fmt.Println("Error fetching URL:", err)
-			continue
+			return nil, err
 		}
-
-		wordCount := countWords(content)
-		fmt.Printf("URL: %s\nWord Count: %d\n", url, wordCount)
+		parsedDates[i] = parsedDate
 	}
+	return parsedDates, nil
 }
