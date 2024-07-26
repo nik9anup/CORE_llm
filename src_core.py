@@ -48,6 +48,8 @@ for commit in commits:
          contents = repo.get_contents(filename, ref=commit.sha).decoded_content.decode('utf-8')
          go_code_in += contents
 
+print(go_code_in)
+print("end of input ************************")
 
 
 
