@@ -38,8 +38,6 @@ runs:
       shell: bash
     - name: Install dependencies
       run: |
-        python3 -m pip install ipykernel
-        python3 -m ipykernel install --user
         pip install -q llama-index-llms-gemini
         pip install -q llama-index google-generativeai
         pip install -q llama-index-embeddings-gemini
