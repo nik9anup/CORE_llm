@@ -44,8 +44,9 @@ for commit in commits:
     for file in files:
       filename = file.filename
       if filename.endswith('.go'):
-         contents = repo.get_contents(filename, ref=commit.sha).decoded_content
+         contents = repo.get_contents(filename, ref=commit.sha).decoded_content.decode('utf-8')
          go_code_in += contents
+
 
 print(go_code_in)
 
