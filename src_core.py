@@ -88,7 +88,7 @@ go_codes_out = extract_relevant_part.get_relevant_part(go_code_in, parser)
 # Initialize tokenizer and models
 #tokenizer = Anthropic().tokenizer
 #llm = Anthropic(model="claude-3-haiku-20240307")
-llm = Gemini(model="models/gemini-pro",api_key=GOOGLE_API_KEY)
+llm = Gemini(model="models/gemini-pro")
 embed_model = GeminiEmbedding(model_name="models/text-embedding-004")
 
 # Initialize vector store and index
