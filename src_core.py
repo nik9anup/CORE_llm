@@ -52,7 +52,7 @@ print(go_code_in)
 # Initialize ChromaDB client and collection
 chroma_client = chromadb.PersistentClient(path="./main")
 chroma_collection = chroma_client.get_or_create_collection("astchroma")
-documents = SimpleDirectoryReader('./data').load_data()
+documents = SimpleDirectoryReader('data').load_data()
 
 # Define the Go language and parser
 GO_LANGUAGE = Language(tsgo.language())
