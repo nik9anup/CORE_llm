@@ -95,12 +95,12 @@ storage_context = StorageContext.from_defaults(vector_store=vector_store)
 index = VectorStoreIndex.from_vector_store(vector_store, embed_model=embed_model, transformations=[splitter])
 
 # Initialize query engine
-query_engine = index.as_query_engine(text_qa_template=text_qa_template, llm=llm)
+#query_engine = index.as_query_engine(text_qa_template=text_qa_template, llm=llm)
 
 result = []
 for go_code_out in go_codes_out:
     query_str = "".join(go_code_out)
-    response=query_engine.query(query_str)
+    #response=query_engine.query(query_str)
     result.append(response.response)
 
 text_qa_template_str_1 = """Make one meaningful and concise go language snippet by combining all the code snippets you have received in the query. \n\n
@@ -113,8 +113,8 @@ input code list: \n
 
 text_qa_template_1 = PromptTemplate(text_qa_template_str_1)
 
-query_engine_1 = index.as_query_engine(text_qa_template=text_qa_template_1,llm=llm)
+#query_engine_1 = index.as_query_engine(text_qa_template=text_qa_template_1,llm=llm)
 
-query_str_1 = str(result)
-response_1 = query_engine_1.query(query_str_1)
-print(response_1.response)
+#query_str_1 = str(result)
+#response_1 = query_engine_1.query(query_str_1)
+#print(response_1.response)
