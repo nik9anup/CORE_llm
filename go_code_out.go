@@ -5,10 +5,25 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strings"
+	"strconv"
 )
 
-func readWords(filename string) ([]string, error) {
+func main() {
+	nums, err := readInts("input.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	sort.Ints(nums)
+
+	medianValue := median(nums)
+
+	fmt.Println("Sorted:", nums)
+	fmt.Println("Median:", medianValue)
+}
+
+func readInts(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -16,49 +31,29 @@ func readWords(filename string) ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var words []string
+	scanner.Split(bufio.ScanWords)
+	var ints []int
 	for scanner.Scan() {
-		line := scanner.Text()
-		words = append(words, strings.Split(line, " ")...)
+		num, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return nil, err
+		}
+		ints = append(ints, num)
 	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	return words, nil
+	return ints, scanner.Err()
 }
 
-func countFrequencies(words []string) map[string]int {
-	frequencies := make(map[string]int)
-	for _, word := range words {
-		frequencies[word]++
-	}
-	return frequencies
+func sortInts(nums []int) {
+	sort.Ints(nums)
 }
 
-func sortWordsByFrequency(frequencies map[string]int) []string {
-	var sortedWords []string
-	for word, freq := range frequencies {
-		sortedWords = append(sortedWords, fmt.Sprintf("%s:%d", word, freq))
+func median(nums []int) float64 {
+	n := len(nums)
+	if n == 0 {
+		return 0
 	}
-	sort.Strings(sortedWords)
-	return sortedWords
-}
-
-func main() {
-	words, err := readWords("input.txt")
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return
+	if n%2 == 0 {
+		return (float64(nums[n/2-1]) + float64(nums[n/2])) / 2
 	}
-
-	frequencies := countFrequencies(words)
-	sortedWords := sortWordsByFrequency(frequencies)
-
-	fmt.Println("Word Frequencies:")
-	for _, wordFreq := range sortedWords {
-		parts := strings.Split(wordFreq, ":")
-		fmt.Printf("%s: %s\n", parts[0], parts[1])
-	}
+	return float64(nums[n/2])
 }

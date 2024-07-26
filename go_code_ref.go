@@ -5,67 +5,46 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strings"
+	"strconv"
 )
 
-func readWords(filename string) ([]string, error) {
+func readInts(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var words []string
+	var ints []int
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		words = append(words, strings.Fields(scanner.Text())...)
+		num, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return nil, err
+		}
+		ints = append(ints, num)
 	}
-	return words, scanner.Err()
+	return ints, scanner.Err()
 }
 
-func countFrequencies(words []string) map[string]int {
-	frequencies := make(map[string]int)
-	for _, word := range words {
-		frequencies[word]++
+func median(nums []int) float64 {
+	sort.Ints(nums)
+	n := len(nums)
+	if n%2 == 0 {
+		return float64(nums[n/2-1]+nums[n/2]) / 2
 	}
-	return frequencies
-}
-
-func sortWordsByFrequency(frequencies map[string]int) []string {
-	type wordFrequency struct {
-		word  string
-		count int
-	}
-
-	var wordFrequencies []wordFrequency
-	for word, count := range frequencies {
-		wordFrequencies = append(wordFrequencies, wordFrequency{word, count})
-	}
-
-	// sort by frequency in descending order using sort.Slice
-	sort.Slice(wordFrequencies, func(i, j int) bool {
-		return wordFrequencies[i].count > wordFrequencies[j].count
-	})
-
-	var sortedWords []string
-	for _, wf := range wordFrequencies {
-		sortedWords = append(sortedWords, wf.word)
-	}
-	return sortedWords
+	return float64(nums[n/2])
 }
 
 func main() {
-	words, err := readWords("input.txt")
+	nums, err := readInts("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	frequencies := countFrequencies(words)
-	sortedWords := sortWordsByFrequency(frequencies)
+	medianValue := median(nums)
 
-	fmt.Println("Word Frequencies:")
-	for _, word := range sortedWords {
-		fmt.Printf("%s: %d\n", word, frequencies[word])
-	}
+	fmt.Println("Sorted:", nums)
+	fmt.Println("Median:", medianValue)
 }
