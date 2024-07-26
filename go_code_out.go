@@ -6,33 +6,9 @@ import (
 	"os"
 	"sort"
 	"strings"
-	"time"
 )
 
-func main() {
-	dates, err := readDates("dates.txt")
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return
-	}
-
-	parsedDates, err := parseDates(dates)
-	if err != nil {
-		fmt.Println("Error parsing dates:", err)
-		return
-	}
-
-	sort.Slice(parsedDates, func(i, j int) bool {
-		return parsedDates[i].Before(parsedDates[j])
-	})
-
-	fmt.Println("Sorted Dates:")
-	for _, date := range parsedDates {
-		fmt.Println(date.Format("2006-01-02"))
-	}
-}
-
-func readDates(filename string) ([]string, error) {
+func readWords(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -40,21 +16,49 @@ func readDates(filename string) ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	dates := make([]string, 0)
+	var words []string
 	for scanner.Scan() {
-		dates = append(dates, scanner.Text())
+		line := scanner.Text()
+		words = append(words, strings.Split(line, " ")...)
 	}
-	return dates, scanner.Err()
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return words, nil
 }
 
-func parseDates(dates []string) ([]time.Time, error) {
-	parsedDates := make([]time.Time, len(dates))
-	for i, date := range dates {
-		parsedDate, err := time.Parse("2006-01-02", date)
-		if err != nil {
-			return nil, err
-		}
-		parsedDates[i] = parsedDate
+func countFrequencies(words []string) map[string]int {
+	frequencies := make(map[string]int)
+	for _, word := range words {
+		frequencies[word]++
 	}
-	return parsedDates, nil
+	return frequencies
+}
+
+func sortWordsByFrequency(frequencies map[string]int) []string {
+	var sortedWords []string
+	for word, freq := range frequencies {
+		sortedWords = append(sortedWords, fmt.Sprintf("%s:%d", word, freq))
+	}
+	sort.Strings(sortedWords)
+	return sortedWords
+}
+
+func main() {
+	words, err := readWords("input.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	frequencies := countFrequencies(words)
+	sortedWords := sortWordsByFrequency(frequencies)
+
+	fmt.Println("Word Frequencies:")
+	for _, wordFreq := range sortedWords {
+		parts := strings.Split(wordFreq, ":")
+		fmt.Printf("%s: %s\n", parts[0], parts[1])
+	}
 }

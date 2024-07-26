@@ -5,65 +5,72 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 )
 
-func readDates(filename string) ([]string, error) {
+func readWords(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var dates []string
+	var words []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		dates = append(dates, scanner.Text())
+		words = append(words, strings.Fields(scanner.Text())...)
 	}
-	return dates, scanner.Err()
+	return words, scanner.Err()
 }
 
-// manually implementing date parsing function
-func parseDates(dates []string) ([]time.Time, error) {
-	var parsedDates []time.Time
-	for _, date := range dates {
-		parsedDate, err := time.Parse("2006-01-02", date)
-		if err != nil {
-			return nil, err
-		}
-		parsedDates = append(parsedDates, parsedDate)
+// manually implementing frequency counting function
+func countFrequencies(words []string) map[string]int {
+	frequencies := make(map[string]int)
+	for _, word := range words {
+		frequencies[word]++
 	}
-	return parsedDates, nil
+	return frequencies
 }
 
 // manually implementing sorting function
-func sortDates(dates []time.Time) {
-	for i := 0; i < len(dates); i++ {
-		for j := i + 1; j < len(dates); j++ {
-			if dates[i].After(dates[j]) {
-				dates[i], dates[j] = dates[j], dates[i]
+func sortWordsByFrequency(frequencies map[string]int) []string {
+	type wordFrequency struct {
+		word  string
+		count int
+	}
+
+	var wordFrequencies []wordFrequency
+	for word, count := range frequencies {
+		wordFrequencies = append(wordFrequencies, wordFrequency{word, count})
+	}
+
+	// sort by frequency in descending order
+	for i := 0; i < len(wordFrequencies); i++ {
+		for j := i + 1; j < len(wordFrequencies); j++ {
+			if wordFrequencies[i].count < wordFrequencies[j].count {
+				wordFrequencies[i], wordFrequencies[j] = wordFrequencies[j], wordFrequencies[i]
 			}
 		}
 	}
+
+	var sortedWords []string
+	for _, wf := range wordFrequencies {
+		sortedWords = append(sortedWords, wf.word)
+	}
+	return sortedWords
 }
 
 func main() {
-	dates, err := readDates("dates.txt")
+	words, err := readWords("input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	parsedDates, err := parseDates(dates)
-	if err != nil {
-		fmt.Println("Error parsing dates:", err)
-		return
-	}
+	frequencies := countFrequencies(words)
+	sortedWords := sortWordsByFrequency(frequencies)
 
-	sortDates(parsedDates)
-
-	fmt.Println("Sorted Dates:")
-	for _, date := range parsedDates {
-		fmt.Println(date.Format("2006-01-02"))
+	fmt.Println("Word Frequencies:")
+	for _, word := range sortedWords {
+		fmt.Printf("%s: %d\n", word, frequencies[word])
 	}
 }
