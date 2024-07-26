@@ -35,11 +35,18 @@ repo = g.get_repo(repo_name)
 pr = repo.get_pull(pr_number)
 
 # Get the files changed in the PR
-files = pr.get_files()
-go_code_in = ""
-for file in files:
-    if file.filename.endswith(".go"):
-        go_code_in += file.patch
+go_code_in= " "
+
+commits = pr.get_commits()
+
+for commit in commits:
+    files = commit.files
+    for file in files:
+        filename = file.filename
+        contents = repo.get_contents(filename, ref=commit.sha).decoded_content
+        go_code_in += contents
+
+print(go_code_in)
 
 # Initialize ChromaDB client and collection
 chroma_client = chromadb.PersistentClient(path="./main")
